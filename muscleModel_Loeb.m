@@ -15,7 +15,7 @@ sigma = 22.5; % specific tension
 F0 = PCSA * sigma; % maximal force
 
 Ur = 0.8; % fractional activation level at which all motor units for a given muscle are recruited (0-1)
-F_pcsa_slow = 0.2; % fractional PSCA of slow-twitch motor units (0-1)
+F_pcsa_slow = 0.5; % fractional PSCA of slow-twitch motor units (0-1)
 F_pcsa_fast = 1-F_pcsa_slow; % fractional PSCA of fast-twitch motor units (0-1)
 U1_th = 0.01; % threshold for slow-twitch fiber
 U2_th = Ur*F_pcsa_slow;

@@ -11,7 +11,7 @@ density = 1.06;
 L0 = modelParameter.L0; % optimal muscle length [cm]
 mass = modelParameter.mass; % muscle mass [kg]
 PCSA = (mass*1000)/(density*L0); % PCSA of muscle
-sigma = 22.5; % specific tension
+sigma = 31.8; % specific tension
 F0 = PCSA * sigma; % maximal force
 
 Ur = 0.8; % fractional activation level at which all motor units for a given muscle are recruited (0-1)

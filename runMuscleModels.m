@@ -41,6 +41,7 @@ hold on
 end
 
 figure(2)
+<<<<<<< HEAD
 plot(amp_temp,maxForce1./maxForce1(end))
 hold on
 plot(amp_temp,maxForce2./maxForce2(end))
@@ -52,3 +53,14 @@ plot(amp_temp,t_0_50_2)
 
 figure(4)
 plot(amp_temp,CoV)
+=======
+plot(amp_temp,maxForce./maxForce(end))
+
+
+figure(3)
+plot(t,output_2.spike_train(450,:))
+hold on
+plot(t,output_2.Af(450,:))
+hold on
+plot(t,output_2.FF(450,:))
+>>>>>>> origin/master

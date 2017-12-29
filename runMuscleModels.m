@@ -25,10 +25,18 @@ maxForce(i) = max(output_1.Force_total);
 figure(1)
 plot(t,output_1.Force_total)
 hold on 
-plot(t,output_2.Force_total*0.98)
+plot(t,output_2.Force_total)
 hold on 
 %plot(t,output_3.Force_total)
 end
 
 figure(2)
 plot(amp_temp,maxForce./maxForce(end))
+
+
+figure(3)
+plot(t,output_2.spike_train(450,:))
+hold on
+plot(t,output_2.Af(450,:))
+hold on
+plot(t,output_2.FF(450,:))

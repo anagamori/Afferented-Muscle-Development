@@ -84,8 +84,16 @@ for i = 1:length(t)
         U_eff_dot = (U(i) - U_eff)/T_U;
         U_eff = U_eff_dot*1/Fs + U_eff;
         
-        W1 = (U_eff - U1_th)/(U_eff - U1_th);
-        W2 = (U_eff - U1_th)/((U_eff - U1_th) + (U_eff - U2_th));
+        if U_eff < U1_th
+            W1 = 0;
+        else
+            W1 = (U_eff - U1_th)/(U_eff - U1_th);
+        end
+        if U_eff < U2_th 
+            W2 = 0;
+        else
+            W2 = (U_eff - U1_th)/((U_eff - U1_th) + (U_eff - U2_th));
+        end
         
         % firing frequency input to second-order excitation dynamics of
         % slow-twitch fiber

@@ -139,8 +139,8 @@ for i = 1:length(t)
         S_vec(i) = S;
         
         Force(i) = Fce*F0;
-        Force_slow(i) = W1*rF_pcsa_1*Af_slow*F0;
-        Force_fast(i) = W2*rF_pcsa_2*Af_fast*F0;
+        Force_slow(i) = W1*Af_slow*F0;
+        Force_fast(i) = W2*Af_fast*F0;
 end
     
 output.Force_total = Force;

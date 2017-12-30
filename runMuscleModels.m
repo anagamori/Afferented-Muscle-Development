@@ -54,11 +54,11 @@ plot(amp_temp,maxForce2./maxForce2(end))
 figure(4)
 plot(amp_temp,CoV)
 
-
-figure(3)
-plot(t,output_2.spike_train(450,:))
-hold on
-plot(t,output_2.Af(450,:))
-hold on
-plot(t,output_2.FF(450,:))
-
+% 
+% figure(3)
+% plot(t,output_2.spike_train(450,:))
+% hold on
+% plot(t,output_2.Af(450,:))
+% hold on
+% plot(t,output_2.FF(450,:))
+% 

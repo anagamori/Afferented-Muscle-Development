@@ -16,7 +16,7 @@ for i = 1:length(amp_temp)
 amp = amp_temp(i);
 input = [zeros(1,1*Fs) amp*[0:1/Fs:1] amp*ones(1,5*Fs),zeros(1,1*Fs)];
     
-output_1 = muscleModel_Loeb(t,Fs,input,modelParameter,simulationParameter);
+output_1 = muscleModel_Song(t,Fs,input,modelParameter,simulationParameter);
 output_2 = muscleModel_Combined(t,Fs,input,modelParameter,simulationParameter,1);
 %output_3 = muscleModel_Combined(t,Fs,input,modelParameter,simulationParameter,2);
 

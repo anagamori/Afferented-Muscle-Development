@@ -115,7 +115,7 @@ for i = 1:length(t)
         Af_fast = Af_fast_function(f_eff_fast,Lce,S);
         
         % activation dependent force of contractile elements
-        Fce = (W1*Af_slow + W2*Af_fast);
+        Fce = U_eff*(W1*Af_slow + W2*Af_fast);
         if Fce < 0
             Fce = 0;
         elseif Fce > 1

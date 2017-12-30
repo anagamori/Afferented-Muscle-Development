@@ -14,22 +14,22 @@ t = 0:1/Fs:3;
 %--------------------------------------------------------------------------
 % Model Parameters
 % Table2
-modelParameters.r_s = 82.5/2*1e-4; %77.5/2*1e-4 Somatic compartment radius [cm]
-modelParameters.l_s = 82.5*1e-4; %77.5*1e-4 Somatic compartment length [cm]
-modelParameters.R_m_s = 1.05; %1.15 Somatic memberance specific resistance [kOhm*cm^2]
+modelParameters.r_s = 112.5/2*1e-4; %77.5/2*1e-4 Somatic compartment radius [cm]
+modelParameters.l_s = 112.5*1e-4; %77.5*1e-4 Somatic compartment length [cm]
+modelParameters.R_m_s = 0.65; %1.15 Somatic memberance specific resistance [kOhm*cm^2]
 
-modelParameters.r_d = 62.5/2*1e-4; %41.5/2*1e-4 Dendritic compartment radius [cm]
-modelParameters.l_d = 6789*1e-4; %5500*1e-4 Dendritic compartment length [cm]
-modelParameters.R_m_d = 10.65; %14.4 Dendritic memberance specific resistance [kOhm*cm^2]
+modelParameters.r_d = 92.5/2*1e-4; %41.5/2*1e-4 Dendritic compartment radius [cm]
+modelParameters.l_d = 10578*1e-4; %5500*1e-4 Dendritic compartment length [cm]
+modelParameters.R_m_d = 6.05; %14.4 Dendritic memberance specific resistance [kOhm*cm^2]
 
 Ca_Threshold = 2.5; %% [mV]
 axonThreshold = 18; % [mA] (page 526)
 
-modelParameters.rheobase = 6.5; %6.5 [nA]
+modelParameters.rheobase = 23.4; %6.5 [nA]
 
 modelParameters.g_Na_bar = 30; %30 % Maximal conductances of sodium current [mS/cm^2]
-modelParameters.g_Kf_bar = 4; %4 % Maximal conductances of potassium current  [mS/cm^2]
-modelParameters.g_Ks_bar = 34; %16 % [mS/cm^2]
+modelParameters.g_Kf_bar = 0.5; %4 % Maximal conductances of potassium current  [mS/cm^2]
+modelParameters.g_Ks_bar = 0.27; %16 % [mS/cm^2]
 
 % State variables
 time2peak = 0.6; % time to peak for state variables [ms]
@@ -40,13 +40,13 @@ modelParameters.beta_h_bar = 4; %4 peak value of beta [1/ms]
 modelParameters.alpha_n_bar = 1.5; %1.5 peak value of alpha [1/ms]
 modelParameters.beta_n_bar = 0.1; % peak value of beta [1/ms]
 modelParameters.alpha_q_bar = 1.5; % peak value of alpha [1/ms]
-modelParameters.beta_q_bar = 0.05; % 0.025 % peak value of beta [1/ms]
+modelParameters.beta_q_bar = 0.025; % 0.025 % peak value of beta [1/ms]
 
 %
 RefractoryPeriod_bar = 5; % absolute refractory period [ms]
 
 %--------------------------------------------------------------------------
-amp = 0.0011;
+amp = 0.0032;
 duration = 10;
 
 Input = zeros(1,length(t));
@@ -54,7 +54,7 @@ Input(1*Fs:2*Fs) =  amp;
 
 output = motorUnitModel_Cisi_function(t,Input,Fs,modelParameters);
 
-[pks,locs] = findpeaks(output.V_s,Fs,'MinPeakHeight',100);
+[pks,locs] = findpeaks(output.V_s,Fs,'MinPeakHeight',120);
 length(pks)
 
 figure(1)

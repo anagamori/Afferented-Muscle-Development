@@ -86,13 +86,15 @@ for i = 1:length(t)
         
         if U_eff < U1_th
             W1 = 0;
-        else
+        elseif U_eff < U2_th
             W1 = (U_eff - U1_th)/(U_eff - U1_th);
+        else
+            W1 = (U_eff - U1_th)/((U_eff - U1_th) + (U_eff - U2_th));
         end
         if U_eff < U2_th 
             W2 = 0;
         else
-            W2 = (U_eff - U1_th)/((U_eff - U1_th) + (U_eff - U2_th));
+            W2 = (U_eff - U2_th)/((U_eff - U1_th) + (U_eff - U2_th));
         end
         
         % firing frequency input to second-order excitation dynamics of

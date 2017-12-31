@@ -15,7 +15,7 @@ sigma = 31.8; % specific tension
 F0 = PCSA * sigma; % maximal force
 
 Ur = 0.8; % fractional activation level at which all motor units for a given muscle are recruited (0-1)
-F_pcsa_slow = 0.2; % fractional PSCA of slow-twitch motor units (0-1)
+F_pcsa_slow = 0.4; % fractional PSCA of slow-twitch motor units (0-1)
 F_pcsa_fast = 1-F_pcsa_slow; % fractional PSCA of fast-twitch motor units (0-1)
 U1_th = 0.01; % threshold for slow-twitch fiber
 U2_th = Ur*F_pcsa_slow;
@@ -89,32 +89,34 @@ for i = 1:length(t)
         if U_eff < U1_th
             rF_pcsa_1 = 0; % recruited fractional PCSA
         else
-            rF_pcsa_1 = (U_eff-U1_th)/(1-U1_th);
+            rF_pcsa_1 = (U_eff-U1_th)/(1-U1_th);          
+            rF_pcsa_1 = rF_pcsa_1*F_pcsa_slow;
             if rF_pcsa_1 > 1
                 rF_pcsa_1 = 1;
             end
-            rF_pcsa_1 = rF_pcsa_1*F_pcsa_slow;
         end
         
         if U_eff < U2_th
             rF_pcsa_2 = 0; % recruited fractional PCSA
         else
             rF_pcsa_2 = (U_eff-U2_th)/(1-U2_th);
+            rF_pcsa_2 = rF_pcsa_2*F_pcsa_fast;
             if rF_pcsa_2 > 1
                 rF_pcsa_2 = 1;
             end
-            rF_pcsa_2 = rF_pcsa_2*F_pcsa_fast;
         end
         
         A = -1.99*U2_th^4 + 1.90*U2_th^3 - 1.75*U2_th^2 + 1.19*U2_th + 0.13;
         tau_s = 0.26;
-        if U_eff >= U1_th && U_eff <= U2_th
+        if U_eff < U1_th
+            W1 = 0;       
+        elseif U_eff >= U1_th && U_eff <= U2_th
             W1 = 1.56*U_eff.^2 - 1.20*U_eff + 0.884;
         elseif U_eff > U2_th
             Ws1 = 1.56*U2_th.^2 - 1.2*U2_th + 0.884;
             W1 = Ws1 + A*(1-exp(-((U_eff-U2_th)/tau_s)));
         else
-            W1 = 0;
+            
         end
         
         B = 0.59*U2_th + 0.39;

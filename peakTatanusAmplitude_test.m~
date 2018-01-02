@@ -3,9 +3,8 @@
 % Author: Akira Nagamori
 % Last update: 12/25/17
 % ---Code descriptions-----
-% Ojbective: find corrective factor for peak twitch amplitude to match
-% predicted peak force produced by a given unit
-%
+% Ojbective: Test the fitted parameters for peak tatanus amplitude and half
+% force 
 %--------------------------------------------------------------------------
 close all
 clear all

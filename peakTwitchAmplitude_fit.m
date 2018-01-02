@@ -130,8 +130,12 @@ figure(4)
 plot(f,x,y)
 % 
 cor_factor = feval(f,i_MU);
+<<<<<<< HEAD
+% save('cor_factor','cor_factor')
+=======
 save('cor_factor','cor_factor')
 
+>>>>>>> origin/master
 %%
 function [twitch,T1,T2_temp] = twitch_function(f_env,Af,Lce,CT,RT,Fs)
 T1 = CT*Lce^2+(CT*1/4)*f_env;

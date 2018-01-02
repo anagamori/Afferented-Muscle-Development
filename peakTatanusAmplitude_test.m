@@ -97,8 +97,8 @@ for k = 1:length(testedUnits)
         Af = Af_fast_function(f_env,Lce,S);
         Af_cor = Af_fast_correction_function(f_env,Lce,S);
     end
-    [twitch,T1,T2_temp] = twitch_function(f_env,Af,Lce,CT(unitN),RT(unitN),Fs);
-    twitch = Pi(unitN).*twitch*Af_cor;
+    [twitch_temp,T1,T2_temp] = twitch_function(f_env,Af,Lce,CT(unitN),RT(unitN),Fs);
+    twitch = twitch_temp*Af_cor;
     
     spikeTrain_temp = spikeTrainGenerator(t_temp,Fs,FR);
     spikeTrain = [zeros(1,1*Fs) spikeTrain_temp zeros(1,1*Fs)];
@@ -129,7 +129,7 @@ figure(4)
 plot(f,x,y)
 % 
 cor_factor = feval(f,i_MU);
-save('cor_factor','cor_factor')
+% save('cor_factor','cor_factor')
 
 %%
 function [twitch,T1,T2_temp] = twitch_function(f_env,Af,Lce,CT,RT,Fs)

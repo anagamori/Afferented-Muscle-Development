@@ -115,6 +115,11 @@ for k = 1:length(testedUnits)
     maxForce(k) = meanForce;
     ratio(k) = Pi(unitN)/maxForce(k);
     
+    figure(5)
+    plot(i_MU,Pi)
+    xlabel('i: MU Number','FontSize',14)
+    ylabel('Pi: Peak Tetanic Force (N)','FontSize',14)
+
 end
 
 figure(2)

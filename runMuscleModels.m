@@ -16,7 +16,7 @@ amp_temp = 0.1:0.1:1;
 
 for i = 1 %:length(amp_temp)
 amp = amp_temp(i);
-trailN = i+11;
+trialN = i+11;
 %input = [zeros(1,1*Fs) amp*[0:1/Fs:1] amp*ones(1,5*Fs),zeros(1,1*Fs)];
 input = 0.3*sin(2*pi*1.*t-pi/2)+0.4;
     
@@ -40,9 +40,9 @@ hold on
 %plot(t,output_3.Force_total)
 
 cd (dataFolder)
-save(['output_Song_' num2str(trailN)],'output_1')
-save(['output_Tsianos_' num2str(trailN)],'output_2')
-save(['output_MU_' num2str(trailN)],'output_3')
+save(['output_Song_' num2str(trialN)],'output_1')
+save(['output_Tsianos_' num2str(trialN)],'output_2')
+save(['output_MU_' num2str(trialN)],'output_3')
 cd (codeFolder)
 end
 

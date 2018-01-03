@@ -98,9 +98,14 @@ for k = 1:length(testedUnits)
         Af = Af_fast_function(f_env,Lce,S);
         Af_cor = Af_fast_correction_function(f_env,Lce,S);
     end
+<<<<<<< HEAD
     [twitch,T1,T2_temp] = twitch_function(f_env,Af,Lce,CT(unitN),RT(unitN),Fs);
     %twitch = Pi(unitN).*twitch*Af_cor;
     twitch = twitch*Af_cor;
+=======
+    [twitch_temp,T1,T2_temp] = twitch_function(f_env,Af,Lce,CT(unitN),RT(unitN),Fs);
+    twitch = twitch_temp*Af_cor;
+>>>>>>> origin/master
     
     spikeTrain_temp = spikeTrainGenerator(t_temp,Fs,FR);
     spikeTrain = [zeros(1,1*Fs) spikeTrain_temp zeros(1,1*Fs)];
@@ -135,8 +140,17 @@ xlabel('Motor Unit Number')
 ylabel('Ratio') 
 % 
 cor_factor = feval(f,i_MU);
+<<<<<<< HEAD
 
 % save('cor_factor','cor_factor')
+=======
+%save('cor_factor','cor_factor')
+
+figure(5)
+plot(i_MU,Pi)
+xlabel('i: MU Number','FontSize',14)
+ylabel('Pi: Peak Tetanic Force (N)','FontSize',14)
+>>>>>>> origin/master
 %%
 function [twitch,T1,T2_temp] = twitch_function(f_env,Af,Lce,CT,RT,Fs)
 T1 = CT*Lce^2+(CT*1/4)*f_env;

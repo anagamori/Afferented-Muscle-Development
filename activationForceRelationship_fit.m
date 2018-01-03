@@ -85,6 +85,10 @@ subplot(2,1,2)
 plot(FR/FR_half(testingUnit),T2)
 hold on
     
+figure(11)
+plot(FR/FR_half(testingUnit),meanForce)
+xlabel('Frequency (f_{0.5})','FontSize',14)
+ylabel('Force (AU)','FontSize',14)
 
 %% Fit a scaling function to Af for muscle length = 1*L0
 f_env_test = FR/FR_half(testingUnit);
@@ -131,11 +135,18 @@ force_af = force_af./force_af(end);
 
 figure(4)
 plot(f_env_test,Af_vec)
+xlabel('Frequency (f_{0.5})','FontSize',14)
+ylabel('Activation','FontSize',14)
 hold on
 plot(f_env_test,force_best)
-hold on 
-plot(f_env_test,Af_new)
+legend('Original Af','Fitted Af')
+% hold on 
+% plot(f_env_test,Af_new)
 
+figure(6)
+plot(f_env_test,Af_new)
+xlabel('Frequency (f_{0.5})','FontSize',14)
+ylabel('Activation','FontSize',14)
 % best fit for  
 % a = 0.46
 % b = 2.17

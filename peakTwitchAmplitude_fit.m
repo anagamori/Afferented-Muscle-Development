@@ -99,7 +99,8 @@ for k = 1:length(testedUnits)
         Af_cor = Af_fast_correction_function(f_env,Lce,S);
     end
     [twitch,T1,T2_temp] = twitch_function(f_env,Af,Lce,CT(unitN),RT(unitN),Fs);
-    twitch = Pi(unitN).*twitch*Af_cor;
+    %twitch = Pi(unitN).*twitch*Af_cor;
+    twitch = twitch*Af_cor;
     
     spikeTrain_temp = spikeTrainGenerator(t_temp,Fs,FR);
     spikeTrain = [zeros(1,1*Fs) spikeTrain_temp zeros(1,1*Fs)];
@@ -119,23 +120,23 @@ end
 
 figure(2)
 plot(testedUnits,maxForce)
+title('Maximum Force')
 
 figure(3)
 plot(testedUnits,ratio)
+title('Pi/Maximum Force')
 
 x = testedUnits';
 y = ratio';
 f = fit(x,y,'smoothingspline');
 figure(4)
 plot(f,x,y)
+xlabel('Motor Unit Number')
+ylabel('Ratio') 
 % 
 cor_factor = feval(f,i_MU);
-<<<<<<< HEAD
-% save('cor_factor','cor_factor')
-=======
-save('cor_factor','cor_factor')
 
->>>>>>> origin/master
+% save('cor_factor','cor_factor')
 %%
 function [twitch,T1,T2_temp] = twitch_function(f_env,Af,Lce,CT,RT,Fs)
 T1 = CT*Lce^2+(CT*1/4)*f_env;

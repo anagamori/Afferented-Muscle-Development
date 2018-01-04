@@ -6,7 +6,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.1"
+    ComputedModelVersion    "1.3"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -26,9 +26,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "cadaverProject"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Thu Jan 04 15:44:28 2018"
+  LastModifiedDate	  "Thu Jan 04 15:58:43 2018"
   RTWModifiedTimeStamp	  436981279
-  ModelVersionFormat	  "1.%<AutoIncrement:1>"
+  ModelVersionFormat	  "1.%<AutoIncrement:3>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -722,6 +722,7 @@ Model {
       Name		      "Constant1"
       SID		      "6"
       Position		      [140, 140, 170, 170]
+      Value		      "0.5"
     }
     Block {
       BlockType		      S-Function
@@ -783,7 +784,7 @@ Model {
       Position		      [660, 119, 690, 151]
       Floating		      off
       Location		      [38, 358, 786, 894]
-      Open		      on
+      Open		      off
       NumInputPorts	      "1"
       ZoomMode		      "yonly"
       List {

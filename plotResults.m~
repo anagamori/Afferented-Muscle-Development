@@ -21,10 +21,8 @@ for i = 1 %:length(amp_temp)
     maxForce2(i) = mean(output_2.Force_total(6*Fs:7*Fs));
     maxForce3(i) = mean(output_3.Force_total(6*Fs:7*Fs));
     CoV(i) = std(output_3.Force_total(4*Fs:5*Fs))/mean(output_3.Force_total(4*Fs:5*Fs));
-    Force_Song = output_1.Force_total(5*Fs:7*Fs)-mean(output_1.Force_total(5*Fs:7*Fs));
-    [pxx_Song,f] = pwelch(Force_Song,[],[],0:0.1:25,Fs,'power');
-    Force_MU = output_3.Force_total(5*Fs:7*Fs)-mean(output_3.Force_total(5*Fs:7*Fs));
-    [pxx_MU,f] = pwelch(Force_MU,[],[],0:0.1:25,Fs,'power');
+    Force_MU = output_3.Force_total(4*Fs:7*Fs)-mean(output_3.Force_total(4*Fs:7*Fs));
+    [pxx,f] = pwelch(Force_MU,[],[],0:0.1:25,Fs,'')
 end
 
 figure(1)
@@ -36,11 +34,3 @@ plot(amp_temp,maxForce3./maxForce3(end))
 legend('Song','Tsianos','Motor Unit')
 xlabel('Activation','FontSize',14)
 ylabel('%MVC','FontSize',14)
-
-figure(2)
-plot(f,pxx_Song./sum(pxx_Song))
-hold on 
-plot(f,pxx_MU./sum(pxx_MU))
-legend('Song','Motor Unit')
-xlabel('Frequency (Hz)','FontSize',14)
-ylabel('Power','FontSize',14)

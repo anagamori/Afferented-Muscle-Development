@@ -49,7 +49,7 @@ t_temp = 0:1/Fs:3;
 Lce = 1;
 Y = 1;
 S = 0.96;
-testingUnit =  1;
+testingUnit =  450;
 FR = 1:1:3*FR_half(testingUnit); %PFR_MU(testingUnit);
 %FR = 0:10:100; %PFR_MU(testingUnit);
 
@@ -99,7 +99,7 @@ ylabel('Peak-to-peak Amplitude (AU)','FontSize',14)
 
 
 %% function used
-function [twitch,T1,T2_temp] = twitch_function(f_env,Af,Lce,CT,RT,Fs)
+function [twitch,T1,T2_temp] = twitch_function(Af,Lce,CT,RT,Fs)
 T1 = CT*Lce^2+(CT*1/2)*Af;
 T2_temp = (RT + (RT*1/2)*Af)/Lce;
 T2 = T2_temp/1.68;
@@ -131,7 +131,7 @@ end
 function FF = frequency2Force_slow_function(f_env,L,Y)
 a_f = 0.52;
 n_f0 = 1.97;
-n_f1 = 6.1;
+n_f1 = 5.1;
 n_f = n_f0 + n_f1*(1/L-1);
 FF = 1 - exp(-(Y*f_env/(a_f*n_f))^n_f);
 FF = FF/f_env;
@@ -140,7 +140,7 @@ end
 function FF = frequency2Force_fast_function(f_env,L,S)
 a_f = 0.52;
 n_f0 = 1.97;
-n_f1 = 4;
+n_f1 = 3.28;
 n_f = n_f0 + n_f1*(1/L-1);
 FF = 1 - exp(-(S*f_env/(a_f*n_f))^n_f);
 FF = FF/f_env;

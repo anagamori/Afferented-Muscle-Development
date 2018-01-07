@@ -81,7 +81,6 @@ Fs = 1000;
 t_twitch = 0:1/Fs:1;
 t_temp = 0:1/Fs:8;
 t = 0:1/Fs:10;
-count = 0;
 
 testedUnits = [1 50 100 150 200 250 300 350 400 450]; % indeces for units tested
 U = [zeros(1,Fs) ones(1,8*Fs) zeros(1,1*Fs+1)];
@@ -93,19 +92,14 @@ for k = 1:length(testedUnits)
     f_env = FR./FR_half(unitN);
     if testedUnits(k) <= index_slow 
         Af = Af_slow_function(f_env,Lce,Y);
-        Af_cor = Af_slow_correction_function(f_env,Lce,Y);
+        FF = frequency2Force_slow_function(f_env,Lce,Y);
     else
         Af = Af_fast_function(f_env,Lce,S);
-        Af_cor = Af_fast_correction_function(f_env,Lce,S);
+        FF = frequency2Force_fast_function(f_env,Lce,S);
     end
-<<<<<<< HEAD
+
     [twitch,T1,T2_temp] = twitch_function(f_env,Af,Lce,CT(unitN),RT(unitN),Fs);
-    %twitch = Pi(unitN).*twitch*Af_cor;
-    twitch = twitch*Af_cor;
-=======
-    [twitch_temp,T1,T2_temp] = twitch_function(f_env,Af,Lce,CT(unitN),RT(unitN),Fs);
-    twitch = twitch_temp*Af_cor;
->>>>>>> origin/master
+    twitch = twitch*FF;
     
     spikeTrain_temp = spikeTrainGenerator(t_temp,Fs,FR);
     spikeTrain = [zeros(1,1*Fs) spikeTrain_temp zeros(1,1*Fs)];
@@ -140,17 +134,13 @@ xlabel('Motor Unit Number')
 ylabel('Ratio') 
 % 
 cor_factor = feval(f,i_MU);
-<<<<<<< HEAD
 
-% save('cor_factor','cor_factor')
-=======
-%save('cor_factor','cor_factor')
+save('cor_factor','cor_factor')
 
 figure(5)
 plot(i_MU,Pi)
 xlabel('i: MU Number','FontSize',14)
 ylabel('Pi: Peak Tetanic Force (N)','FontSize',14)
->>>>>>> origin/master
 %%
 function [twitch,T1,T2_temp] = twitch_function(f_env,Af,Lce,CT,RT,Fs)
 T1 = CT*Lce^2+(CT*1/4)*f_env;
@@ -173,14 +163,6 @@ n_f = n_f0 + n_f1*(1/L-1);
 Af = 1 - exp(-(Y*force/(a_f*n_f))^n_f);
 end
 
-function Af = Af_slow_correction_function(f_env,L,Y)
-a_f = 0.46;
-n_f0 = 2.17;
-n_f1 = 6.1;
-n_f = n_f0 + n_f1*(1/L-1);
-Af = 1 - exp(-(Y*f_env/(a_f*n_f))^n_f);
-Af = Af/f_env;
-end
 
 
 function Af = Af_fast_function(force,L,S)
@@ -191,13 +173,22 @@ n_f = n_f0 + n_f1*(1/L-1);
 Af = 1 - exp(-(S*force/(a_f*n_f))^n_f);
 end
 
-function Af = Af_fast_correction_function(f_env,L,S)
-a_f = 0.46;
-n_f0 = 2.17;
-n_f1 = 4;
+function FF = frequency2Force_slow_function(f_env,L,Y)
+a_f = 0.52;
+n_f0 = 1.97;
+n_f1 = 5.1;
 n_f = n_f0 + n_f1*(1/L-1);
-Af = 1 - exp(-(S*f_env/(a_f*n_f))^n_f);
-Af = Af/f_env;
+FF = 1 - exp(-(Y*f_env/(a_f*n_f))^n_f);
+FF = FF/f_env;
+end
+
+function FF = frequency2Force_fast_function(f_env,L,S)
+a_f = 0.52;
+n_f0 = 1.97;
+n_f1 = 3.28;
+n_f = n_f0 + n_f1*(1/L-1);
+FF = 1 - exp(-(S*f_env/(a_f*n_f))^n_f);
+FF = FF/f_env;
 end
 
 

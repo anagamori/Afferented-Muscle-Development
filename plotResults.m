@@ -9,7 +9,7 @@ Fs = 1000;
 t = 0:1/Fs:8;
 amp_temp = 0.1:0.1:1;
 
-for i = 1 %:length(amp_temp)
+for i = 5 %:length(amp_temp)
     trialN = i;
     cd (dataFolder)
     load(['output_Song_' num2str(trialN)])
@@ -23,19 +23,19 @@ for i = 1 %:length(amp_temp)
     CoV(i) = std(output_3.Force_total(4*Fs:5*Fs))/mean(output_3.Force_total(4*Fs:5*Fs));
     Force_Song = output_1.Force_total(5*Fs:7*Fs)-mean(output_1.Force_total(5*Fs:7*Fs));
     [pxx_Song,f] = pwelch(Force_Song,[],[],0:0.1:25,Fs,'power');
-    Force_MU = output_3.Force_total(5*Fs:7*Fs)-mean(output_3.Force_total(5*Fs:7*Fs));
+    Force_MU = output_3.Force_total(2*Fs:7*Fs)-mean(output_3.Force_total(2*Fs:7*Fs));
     [pxx_MU,f] = pwelch(Force_MU,[],[],0:0.1:25,Fs,'power');
 end
 
-figure(1)
-plot(amp_temp,maxForce1./maxForce1(end))
-hold on
-plot(amp_temp,maxForce2./maxForce2(end))
-hold on
-plot(amp_temp,maxForce3./maxForce3(end))
-legend('Song','Tsianos','Motor Unit')
-xlabel('Activation','FontSize',14)
-ylabel('%MVC','FontSize',14)
+% figure(1)
+% plot(amp_temp,maxForce1./maxForce1(end))
+% hold on
+% plot(amp_temp,maxForce2./maxForce2(end))
+% hold on
+% plot(amp_temp,maxForce3./maxForce3(end))
+% legend('Song','Tsianos','Motor Unit')
+% xlabel('Activation','FontSize',14)
+% ylabel('%MVC','FontSize',14)
 
 figure(2)
 plot(f,pxx_Song./sum(pxx_Song))

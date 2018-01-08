@@ -18,6 +18,7 @@ for i = length(amp_temp)
 amp = amp_temp(i);
 trialN = i+11;
 input = [zeros(1,1*Fs) amp*[0:1/Fs:1] amp*ones(1,5*Fs),zeros(1,1*Fs)];
+%input = [zeros(1,1*Fs) amp*ones(1,6*Fs),zeros(1,1*Fs)];
 %input = 0.3*sin(2*pi*1.*t-pi/2)+0.4;
     
 output_1 = muscleModel_Song(t,Fs,input,modelParameter,simulationParameter);

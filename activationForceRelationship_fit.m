@@ -199,7 +199,7 @@ plot(f_env_test,force_best)
 % c = 5.1 for slow
 % c = 3.28 for fast
 %% function used
-function [twitch,T1,T2_temp] = twitch_function(f_env,Af,Lce,CT,RT,Fs)
+function [twitch,T1,T2_temp] = twitch_function(Af,Lce,CT,RT,Fs)
 T1 = CT*Lce^2+(CT*1/2)*Af;
 T2_temp = (RT + (RT*1/2)*Af)/Lce;
 T2 = T2_temp/1.68;

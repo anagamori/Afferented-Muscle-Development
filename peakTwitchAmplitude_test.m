@@ -1,5 +1,5 @@
 %--------------------------------------------------------------------------
-% peakTwitchAmplitude_fit.m
+% peakTwitchAmplitude_test.m
 % Author: Akira Nagamori
 % Last update: 12/25/17
 % ---Code descriptions-----
@@ -82,7 +82,9 @@ t_twitch = 0:1/Fs:1;
 t_temp = 0:1/Fs:8;
 t = 0:1/Fs:10;
 
-testedUnits = [1 50 100 150 200 250 300 350 400 450]; % indeces for units tested
+load('cor_factor')
+
+testedUnits = i_MU; % indeces for units tested
 U = [zeros(1,Fs) ones(1,8*Fs) zeros(1,1*Fs+1)];
 
 for k = 1:length(testedUnits)
@@ -90,22 +92,30 @@ for k = 1:length(testedUnits)
     unitN = testedUnits(k);
     FR = PFR_MU(unitN);
     f_env = FR./FR_half(unitN);
-    if testedUnits(k) <= index_slow 
-        Af = Af_slow_function(f_env,Lce,Y);
-        FF = frequency2Force_slow_function(f_env,Lce,Y);
-    else
-        Af = Af_fast_function(f_env,Lce,S);
-        FF = frequency2Force_fast_function(f_env,Lce,S);
-    end
-
-    [twitch,T1,T2_temp] = twitch_function(Af,Lce,CT(unitN),RT(unitN),Fs);
-    twitch = twitch*FF;
-    
+     
     spikeTrain_temp = spikeTrainGenerator(t_temp,Fs,FR);
     spikeTrain = [zeros(1,1*Fs) spikeTrain_temp zeros(1,1*Fs)];
+    force = zeros(1,length(t));
+    force_half = force./Pi_half(unitN);
+    for i = 1:length(t)
+        spikeTrain_temp = zeros(1,length(t));
+        if testedUnits(k) <= index_slow
+            Af = Af_slow_function(f_env,Lce,Y);
+            FF = frequency2Force_slow_function(f_env,Lce,Y);
+        else
+            Af = Af_fast_function(f_env,Lce,S);
+            FF = frequency2Force_fast_function(f_env,Lce,S);
+        end
+        [twitch,T1,T2_temp] = twitch_function(Af,Lce,CT(unitN),RT(unitN),Fs);
+        twitch = twitch*FF*cor_factor(unitN);
+        if spikeTrain(i) == 1
+            spikeTrain_temp(i) = 1;
+            force_temp = conv(spikeTrain,twitch);
+            force = force + force_temp(1:length(t));
+        end
+        force_half = force./Pi_half(unitN);
+    end    
     
-    force_temp = conv(spikeTrain,twitch);
-    force = force_temp(1:length(t));
     meanForce = mean(force(5*Fs:7*Fs));
     %
     figure(1)
@@ -113,38 +123,21 @@ for k = 1:length(testedUnits)
     hold on
        
     maxForce(k) = meanForce;
-    ratio(k) = Pi(unitN)/maxForce(k);
+    
+    force_vec(k,:) = force;
     
 end
 
 figure(2)
 plot(testedUnits,maxForce)
+hold on
+plot(testedUnits,Pi)
 title('Maximum Force')
 
-figure(3)
-plot(testedUnits,ratio)
-title('Pi/Maximum Force')
-
-x = testedUnits';
-y = ratio';
-f = fit(x,y,'smoothingspline');
-figure(4)
-plot(f,x,y)
-xlabel('Motor Unit Number')
-ylabel('Ratio') 
-% 
-cor_factor = feval(f,i_MU);
-
-save('cor_factor','cor_factor')
-
-figure(5)
-plot(i_MU,Pi)
-xlabel('i: MU Number','FontSize',14)
-ylabel('Pi: Peak Tetanic Force (N)','FontSize',14)
 %%
 function [twitch,T1,T2_temp] = twitch_function(Af,Lce,CT,RT,Fs)
-T1 = CT*Lce^2+(CT*1/2)*Af;
-T2_temp = (RT + (RT*1/2)*Af)/Lce;
+T1 = CT*Lce^2+(CT*1/4)*Af;
+T2_temp = (RT + (RT*1/4)*Af)/Lce;
 T2 = T2_temp/1.68;
 t_twitch = 0:1/Fs:1;
 f_1 = t_twitch./T1.*exp(1-t_twitch./T1);
@@ -162,8 +155,6 @@ n_f1 = 5;
 n_f = n_f0 + n_f1*(1/L-1);
 Af = 1 - exp(-(Y*force/(a_f*n_f))^n_f);
 end
-
-
 
 function Af = Af_fast_function(force,L,S)
 a_f = 0.56;

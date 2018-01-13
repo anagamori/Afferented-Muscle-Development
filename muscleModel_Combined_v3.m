@@ -4,7 +4,7 @@
 % Last update: 12/26/207
 %--------------------------------------------------------------------------
 
-function output = muscleModel_Combined(t,Fs,input,modelParameter,simulationParameter,recruitmentType)
+function output = muscleModel_Combined_v3(t,Fs,input,modelParameter,simulationParameter,recruitmentType)
 %--------------------------------------------------------------------------
 % Define model parameters
 %--------------------------------------------------------------------------
@@ -92,12 +92,9 @@ Outputforce_half= zeros(N_MU,length(t));
 OutputAf = zeros(N_MU,length(t));
 OutputFF = zeros(N_MU,length(t));
 
-<<<<<<< Updated upstream
-=======
 Fs_MU = 1000;
 count = 1;
 index_MU = 1:Fs/Fs_MU:length(t);
->>>>>>> Stashed changes
 %--------------------------------------------------------------------------
 % Simulation
 for i = 1:length(t)
@@ -107,7 +104,7 @@ for i = 1:length(t)
     % Determine firing rate of individual motor units given an input (U)
     if recruitmentType == 1 % linear increase in firing rate up to Ur
         FR_MU(:,i) = (PFR_MU-MFR_MU)./(1-U_th).*(U_eff-U_th) + MFR_MU;
-    elseif recruitmentType == 2 % equal gain across units and saturation 
+    elseif recruitmentType == 2 % equal gain across units and saturation
         FR_MU(:,i) = g_e*(U(i)-U_th)+ MFR_MU;
     end
     % Make FR of units that is below 8 Hz be zero
@@ -122,41 +119,32 @@ for i = 1:length(t)
     % Yielding
     Y_af_temp = yield_function(Y_af_temp,Vce,Fs);
     Y_af(1:index_slow,i) = Y_af_temp;
-    for f_temp = 1:N_MU
-        if FR_MU(f_temp,:) > PFR_MU(f_temp)
-            FR_MU(f_temp,:) = PFR_MU(f_temp);
-        end
-        if f_temp <= index_slow
-            Af(f_temp) = Af_slow_function(force_half(f_temp),Lce,Y_af(f_temp,i));
-            OutputAf(f_temp,i)= Af(f_temp);
-            FF(f_temp) = frequency2Force_slow_function(f_env(f_temp),Lce,Y_af(f_temp,i));
-            OutputFF(f_temp,i)= FF(f_temp);
-        else
-            % Sag
-            S_af_temp(f_temp) = sag_function(S_af_temp(f_temp),force_half(f_temp),Fs);
-            S_af(f_temp,i) = S_af_temp(f_temp);
-            
-            Af(f_temp) = Af_fast_function(force_half(f_temp),Lce,S_af(f_temp,i));
-            OutputAf(f_temp,i)= Af(f_temp);
-            FF(f_temp) = frequency2Force_fast_function(f_env(f_temp),Lce,S_af(f_temp,i));
-            OutputFF(f_temp,i)= FF(f_temp);
-        end
-    end
     % Af
-    if i == count       
-        for n = 1:length(find(FR_MU(:,i)>=MFR_MU)) % loop through motor units whose firing rate is greater than minimum firing rate defined by the user                     
-            spike_train_temp = zeros(1,length(t));
+    
+    for n = 1:N_MU % loop through motor units whose firing rate is greater than minimum firing rate defined by the user
+        spike_train_temp = zeros(1,length(t));
+        if FR_MU(n,:) > PFR_MU(n)
+            FR_MU(n,:) = PFR_MU(n);
+        end
+        if n <= index_slow
+            Af(n) = Af_slow_function(force_half(n),Lce,Y_af(n,i));
+            OutputAf(n,i)= Af(n);
+            FF(n) = frequency2Force_slow_function(f_env(n),Lce,Y_af(n,i));
+            OutputFF(n,i)= FF(n);
+        else
+            S_af_temp(n) = sag_function(S_af_temp(n),force_half(n),Fs);
+            S_af(n,i) = S_af_temp(n);
+            Af(n) = Af_fast_function(force_half(n),Lce,S_af(n,i));
+            OutputAf(n,i)= Af(n);
+            FF(n) = frequency2Force_fast_function(f_env(n),Lce,S_af(n,i));
+            OutputFF(n,i)= FF(n);
+        end
+        if FR_MU(n,i)>=MFR_MU
             if ~any(spike_train(n,:)) % when the motor unit fires at the first time
                 spike_train(n,i) = 1; % add a spike to the vector
                 spike_train_temp(i) = 1;
-                mu = 1/FR_MU(n,i);
-                Z = randn(1);
-                Z(Z>3.9) = 3.9;
-                Z(Z<-3.9) = -3.9;
-                spike_time_temp = (mu + mu*cv_MU*Z)*Fs;                               
-                spike_time_temp2 = round(spike_time_temp) + i;
-                spike_time(n) = interp1(index_MU,index_MU,spike_time_temp2,'nearest');
-                
+                spike_time_temp = spikeTime_Generator(FR_MU(n,i),cv_MU,Fs,i);
+                spike_time(n) = interp1(index_MU,index_MU,spike_time_temp,'nearest');
                 [twitch_temp,~,~] = twitch_function(Af(n),Lce,CT(n),RT(n),Fs);
                 twitch =  Pi(n).*twitch_temp*FF(n);
                 force_temp = conv(spike_train_temp,twitch);
@@ -167,13 +155,9 @@ for i = 1:length(t)
                     spike_train_temp(i) = 1;
                     % update mean firing rate of the motor unit given the
                     % current value of input
-                    mu = 1/FR_MU(n,i); % interspike interval
-                    Z = randn(1);
-                    Z(Z>3.9) = 3.9;
-                    Z(Z<-3.9) = -3.9;
-                    spike_time_temp = (mu + mu*cv_MU*Z)*Fs; % interspike interval
-                    spike_time_temp2 = round(spike_time_temp) + i;
-                    spike_time(n) = interp1(index_MU,index_MU,spike_time_temp2,'nearest');
+                    
+                    spike_time_temp = spikeTime_Generator(FR_MU(n,i),cv_MU,Fs,i);
+                    spike_time(n) = interp1(index_MU,index_MU,spike_time_temp,'nearest');
                     
                     [twitch_temp,~,~] = twitch_function(Af(n),Lce,CT(n),RT(n),Fs);
                     twitch =  Pi(n).*twitch_temp*FF(n);
@@ -183,13 +167,8 @@ for i = 1:length(t)
                     spike_train(n,i) = 1;
                     spike_train_temp(i) = 1;
                     spike_time(n) = i;
-                    mu = 1/FR_MU(n,i); % interspike interval
-                    Z = randn(1);
-                    Z(Z>3.9) = 3.9;
-                    Z(Z<-3.9) = -3.9;
-                    spike_time_temp = (mu + mu*cv_MU*Z)*Fs; % interspike interval
-                    spike_time_temp2 = round(spike_time_temp) + i;
-                    spike_time(n) = interp1(index_MU,index_MU,spike_time_temp2,'nearest');
+                    spike_time_temp = spikeTime_Generator(FR_MU(n,i),cv_MU,Fs,i);
+                    spike_time(n) = interp1(index_MU,index_MU,spike_time_temp,'nearest');
                     
                     % force_temp = conv(spike_train_temp,g.*twitch(n,:)).*FL_temp.*FV_temp.*Af;
                     [twitch_temp,~,~] = twitch_function(Af(n),Lce,CT(n),RT(n),Fs);
@@ -215,9 +194,9 @@ for i = 1:length(t)
             end
             force(n,i) = force(n,i)*FL_temp*FV_temp;
         end
-        
-        count = count + Fs/Fs_MU;
     end
+    
+    
 end
 
 Force = sum(force);
@@ -268,7 +247,7 @@ output.Y = Y_af;
         n_f = n_f0 + n_f1*(1/L-1);
         Af = 1 - exp(-(S*f_eff/(a_f*n_f))^n_f);
     end
-    
+
     function FF = frequency2Force_slow_function(f_env,L,Y)
         a_f = 0.52;
         n_f0 = 1.97;
@@ -308,7 +287,14 @@ output.Y = Y_af;
         
     end
 
-
+    function spikeTime = spikeTime_Generator(FR,CoV,Fs,i)
+        mu = 1/FR;
+        Z = randn(1);
+        Z(Z>3.9) = 3.9;
+        Z(Z<-3.9) = -3.9;
+        spikeTime_temp = (mu + mu*CoV*Z)*Fs; % interspike interval
+        spikeTime = round(spikeTime_temp)+i;
+    end
 
     function FL = FL_slow_function(L)
         %---------------------------

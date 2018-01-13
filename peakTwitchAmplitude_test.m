@@ -92,30 +92,24 @@ for k = 1:length(testedUnits)
     unitN = testedUnits(k);
     FR = PFR_MU(unitN);
     f_env = FR./FR_half(unitN);
-     
+    if testedUnits(k) <= index_slow
+        Af = Af_slow_function(f_env,Lce,Y);
+        FF = frequency2Force_slow_function(f_env,Lce,Y);
+    else
+        Af = Af_fast_function(f_env,Lce,S);
+        FF = frequency2Force_fast_function(f_env,Lce,S);
+    end
     spikeTrain_temp = spikeTrainGenerator(t_temp,Fs,FR);
     spikeTrain = [zeros(1,1*Fs) spikeTrain_temp zeros(1,1*Fs)];
     force = zeros(1,length(t));
     force_half = force./Pi_half(unitN);
-    for i = 1:length(t)
-        spikeTrain_temp = zeros(1,length(t));
-        if testedUnits(k) <= index_slow
-            Af = Af_slow_function(f_env,Lce,Y);
-            FF = frequency2Force_slow_function(f_env,Lce,Y);
-        else
-            Af = Af_fast_function(f_env,Lce,S);
-            FF = frequency2Force_fast_function(f_env,Lce,S);
-        end
-        [twitch,T1,T2_temp] = twitch_function(Af,Lce,CT(unitN),RT(unitN),Fs);
-        twitch = twitch*FF*cor_factor(unitN);
-        if spikeTrain(i) == 1
-            spikeTrain_temp(i) = 1;
-            force_temp = conv(spikeTrain,twitch);
-            force = force + force_temp(1:length(t));
-        end
-        force_half = force./Pi_half(unitN);
-    end    
     
+    [twitch,T1,T2_temp] = twitch_function(Af,Lce,CT(unitN),RT(unitN),Fs);
+    twitch = twitch*FF*cor_factor(unitN);
+    
+    force_temp = conv(spikeTrain,twitch);
+    force = force_temp(1:length(t));
+  
     meanForce = mean(force(5*Fs:7*Fs));
     %
     figure(1)
@@ -136,8 +130,8 @@ title('Maximum Force')
 
 %%
 function [twitch,T1,T2_temp] = twitch_function(Af,Lce,CT,RT,Fs)
-T1 = CT*Lce^2+(CT*1/4)*Af;
-T2_temp = (RT + (RT*1/4)*Af)/Lce;
+T1 = CT*Lce^2+(CT*1/2)*Af;
+T2_temp = (RT + (RT*1/2)*Af)/Lce;
 T2 = T2_temp/1.68;
 t_twitch = 0:1/Fs:1;
 f_1 = t_twitch./T1.*exp(1-t_twitch./T1);
@@ -170,7 +164,11 @@ n_f0 = 1.97;
 n_f1 = 5.1;
 n_f = n_f0 + n_f1*(1/L-1);
 FF = 1 - exp(-(Y*f_env/(a_f*n_f))^n_f);
-FF = FF/f_env;
+if f_env == 0 
+    FF = 0;
+else
+    FF = FF/f_env;
+end
 end
 
 function FF = frequency2Force_fast_function(f_env,L,S)
@@ -179,7 +177,11 @@ n_f0 = 1.97;
 n_f1 = 3.28;
 n_f = n_f0 + n_f1*(1/L-1);
 FF = 1 - exp(-(S*f_env/(a_f*n_f))^n_f);
-FF = FF/f_env;
+if f_env == 0 
+    FF = 0;
+else
+    FF = FF/f_env;
+end
 end
 
 

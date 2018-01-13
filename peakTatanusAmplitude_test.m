@@ -49,13 +49,16 @@ t_temp = 0:1/Fs:3;
 Lce = 1;
 Y = 1;
 S = 0.96;
-testingUnit =  450;
+testingUnit =  1;
 FR = 1:1:3*FR_half(testingUnit); %PFR_MU(testingUnit);
 %FR = 0:10:100; %PFR_MU(testingUnit);
 
 %[twitch,T1,T2] = twitch_function(1,Af,Lce,CT(testingUnit),RT(testingUnit),Fs);
 %% Obtain non-corrected activation-force relationship
 % twitch amplitude = 1
+Lce_temp = [0.9 1 1.1];
+for j = 1:length(Lce_temp)
+    Lce = Lce_temp(j);
 for i = 1:length(FR)
     f_env = FR(i)/FR_half(testingUnit);
     spikeTrain_temp = spikeTrainGenerator(t_temp,Fs,FR(i));
@@ -68,7 +71,7 @@ for i = 1:length(FR)
         FF = frequency2Force_fast_function(f_env,Lce,S);
     end
     Af_vec(i) = Af;
-    [twitch,T1(i),T2(i)] = twitch_function(f_env,Af,Lce,CT(testingUnit),RT(testingUnit),Fs);
+    [twitch,T1(i),T2(i)] = twitch_function(Af,Lce,CT(testingUnit),RT(testingUnit),Fs);
     twitch = twitch*FF;
     force_temp = conv(spikeTrain,twitch);
     force = force_temp(1:length(t));
@@ -80,6 +83,23 @@ for i = 1:length(FR)
     meanForce(i) = mean(force(2*Fs:4*Fs));
     P2PForce(i) = max(force(2*Fs:4*Fs))-min(force(2*Fs:4*Fs));
 end
+figure(4)
+plot(FR/FR_half(testingUnit),meanForce./meanForce(end))
+hold on
+xlabel('Frequency (f_{0.5})','FontSize',14)
+ylabel('Force (AU)','FontSize',14)
+
+figure(5)
+plot(FR/FR_half(testingUnit),P2PForce)
+hold on
+xlabel('Frequency (f_{0.5})','FontSize',14)
+ylabel('Peak-to-peak Amplitude (AU)','FontSize',14)
+end
+
+figure(4)
+legend('Lce = 0.9','Lce = 1','Lce = 1.1')
+figure(5)
+legend('Lce = 0.9','Lce = 1','Lce = 1.1')
 
 
 figure(2)

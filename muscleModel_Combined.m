@@ -87,12 +87,10 @@ Y_af = zeros(N_MU,length(t));
 Af = zeros(N_MU,1);
 FF = zeros(N_MU,1);
 
-
 Outputfenv = zeros(N_MU,length(t));
 Outputforce_half= zeros(N_MU,length(t));
 OutputAf = zeros(N_MU,length(t));
 OutputFF = zeros(N_MU,length(t));
-
 
 %--------------------------------------------------------------------------
 % Simulation

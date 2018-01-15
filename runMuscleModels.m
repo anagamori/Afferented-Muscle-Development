@@ -10,25 +10,25 @@ load('cor_factor')
 modelParameter.cor_factor = cor_factor;
 simulationParameter.Lce = 1;
 
-Fs = 1000;
-t = 0:1/Fs:8;
+Fs = 10000;
+t = 0:1/Fs:5;
 amp_temp = 0.1:0.1:1;
 
-for i = length(amp_temp)
+for i = 2 %length(amp_temp)
 amp = amp_temp(i);
 trialN = i+11;
-input = [zeros(1,1*Fs) amp*[0:1/Fs:1] amp*ones(1,5*Fs),zeros(1,1*Fs)];
+input = [zeros(1,0.5*Fs) amp*[0:1/Fs:1] amp*ones(1,3*Fs),zeros(1,0.5*Fs)];
 %input = [zeros(1,1*Fs) amp*ones(1,6*Fs),zeros(1,1*Fs)];
 %input = 0.3*sin(2*pi*1.*t-pi/2)+0.4;
     
 output_1 = muscleModel_Song(t,Fs,input,modelParameter,simulationParameter);
 output_2 = muscleModel_Tsianos(t,Fs,input,modelParameter,simulationParameter);
-output_3 = muscleModel_Combined(t,Fs,input,modelParameter,simulationParameter,1);
+output_3 = muscleModel_Combined_v3(t,Fs,input,modelParameter,simulationParameter,1);
 
-maxForce1(i) =  mean(output_1.Force_total(6*Fs:7*Fs));
-maxForce2(i) = mean(output_2.Force_total(6*Fs:7*Fs));
-maxForce3(i) = mean(output_3.Force_total(6*Fs:7*Fs));
-CoV(i) = std(output_3.Force_total(4*Fs:5*Fs))/mean(output_3.Force_total(4*Fs:5*Fs));
+maxForce1(i) =  mean(output_1.Force_total(3*Fs:4*Fs));
+maxForce2(i) = mean(output_2.Force_total(3*Fs:4*Fs));
+maxForce3(i) = mean(output_3.Force_total(3*Fs:4*Fs));
+CoV(i) = std(output_3.Force_total(3*Fs:4*Fs))/mean(output_3.Force_total(3*Fs:4*Fs));
 
 %%
 figure(1)
@@ -47,13 +47,13 @@ hold on
 % cd (codeFolder)
 end
 
-figure(2)
-plot(amp_temp,maxForce1./maxForce1(end))
-hold on
-plot(amp_temp,maxForce2./maxForce2(end))
-hold on
-plot(amp_temp,maxForce3./maxForce3(end))
-legend('Song','Tsianos','Motor Unit')
+% figure(2)
+% plot(amp_temp,maxForce1./maxForce1(end))
+% hold on
+% plot(amp_temp,maxForce2./maxForce2(end))
+% hold on
+% plot(amp_temp,maxForce3./maxForce3(end))
+% legend('Song','Tsianos','Motor Unit')
 
 % figure(4)
 % plot(amp_temp,CoV)

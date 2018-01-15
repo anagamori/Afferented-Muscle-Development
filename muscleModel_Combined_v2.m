@@ -66,6 +66,7 @@ CT = 1.5*(CT_n*FR_half_n)./FR_half;
 CT = CT - (CT(end)-CT_n);
 CT = CT/1000;
 RT = CT;
+
 t_twitch = 0:1/Fs:2;
 %--------------------------------------------------------------------------
 cv_MU = 0; %ISI variability as per coefficient of variation (=mean/SD)
@@ -110,24 +111,18 @@ bv_fast = 0.69;
 
 %--------------------------------------------------------------------------
 % initialize parameters
+
 Lce = simulationParameter.Lce;
 Vce = 0;
 
 spike_time = zeros(N_MU,1);
+
 spike_train = cell(1,N_MU);
 force = cell(1,N_MU);
 for j = 1:N_MU
     spike_train{j} = zeros(1,length(t));
     force{j} = zeros(1,length(t));
 end
-
-
-
-Outputfenv = zeros(N_MU,length(t));
-Outputforce_half= zeros(N_MU,length(t));
-OutputAf = zeros(N_MU,length(t));
-OutputFF = zeros(N_MU,length(t));
-
 
 %--------------------------------------------------------------------------
 % Simulation
@@ -272,5 +267,12 @@ output.spike_train = spike_train;
 % output.FF = OutputFF;
 % output.S = S_af;
 % output.Y = Y_af;
+
+
+
+output.force = force;
+output.spike_train = spike_train;
+
+
 
 end

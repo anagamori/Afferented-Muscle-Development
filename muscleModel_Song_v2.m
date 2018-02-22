@@ -1,10 +1,10 @@
 %--------------------------------------------------------------------------
 % muscleModel_Loeb.m
 % Author: Akira Nagamori
-% Last update: 12/20/207
+% Last update: 1/11/2018
 %--------------------------------------------------------------------------
 
-function output = muscleModel_Tsianos(t,Fs,input,modelParameter,simulationParameter)
+function output = muscleModel_Song_v2(t,Fs,input,modelParameter,simulationParameter)
 
 % model parameters
 density = 1.06;
@@ -76,60 +76,25 @@ Force_fast = zeros(1,length(t));
 % simulation
 for i = 1:length(t)
         if U(i) >= U_eff
-            T_rise = 0.38*U2_th^2 + 0.8*U2_th + 0.14;
-            T_U = T_rise*exp(-(U(i)-U_eff)*log(T_rise*1000));
-        else
-            T_fall = -0.32*U2_th^4 + 0.82*U2_th^3 - 0.28*U2_th^2 + 0.014*U2_th + 0.09;
-            T_U = T_fall;
+            T_U = 0.03;
+        elseif U(i) < U_eff
+            T_U = 0.15;
         end
-        
+      
         U_eff_dot = (U(i) - U_eff)/T_U;
         U_eff = U_eff_dot*1/Fs + U_eff;
         
         if U_eff < U1_th
-            rF_pcsa_1 = 0; % recruited fractional PCSA
+            W1 = 0;
+        elseif U_eff < U2_th
+            W1 = (U_eff - U1_th)/(U_eff - U1_th);
         else
-            rF_pcsa_1 = (U_eff-U1_th)/(1-U1_th);          
-            rF_pcsa_1 = rF_pcsa_1*F_pcsa_slow;
-            if rF_pcsa_1 > 1
-                rF_pcsa_1 = 1;
-            end
+            W1 = (U_eff - U1_th)/((U_eff - U1_th) + (U_eff - U2_th));
         end
-        
-        if U_eff < U2_th
-            rF_pcsa_2 = 0; % recruited fractional PCSA
-        else
-            rF_pcsa_2 = (U_eff-U2_th)/(1-U2_th);
-            rF_pcsa_2 = rF_pcsa_2*F_pcsa_fast;
-            if rF_pcsa_2 > 1
-                rF_pcsa_2 = 1;
-            end
-        end
-        
-        A = -1.99*U2_th^4 + 1.90*U2_th^3 - 1.75*U2_th^2 + 1.19*U2_th + 0.13;
-        tau_s = 0.26;
-        if U_eff < U1_th
-            W1 = 0;       
-        elseif U_eff >= U1_th && U_eff <= U2_th
-            W1 = 1.56*U_eff.^2 - 1.20*U_eff + 0.884;
-        elseif U_eff > U2_th
-            Ws1 = 1.56*U2_th.^2 - 1.2*U2_th + 0.884;
-            W1 = Ws1 + A*(1-exp(-((U_eff-U2_th)/tau_s)));
-        else
-            
-        end
-        
-        B = 0.59*U2_th + 0.39;
-        C = -98.82*U2_th^5 + 155.7*U2_th^4 - 85.96*U2_th^3 + 19.32*U2_th^2 - 2.62*U2_th + 1.02;
-        D = 0.35;
-        tau_f = -0.27*U2_th + 0.25;
-        if U_eff >= U2_th && U_eff < Ur
-            W2 = ((U_eff-B)/C)^2 + 0.65;
-        elseif U_eff >= Ur
-            Wf1 = ((Ur-B)/C)^2 + 0.65;
-            W2 = Wf1 + D*(1-exp(-((U_eff-Ur)/tau_f)));
-        else
+        if U_eff < U2_th 
             W2 = 0;
+        else
+            W2 = (U_eff - U2_th)/((U_eff - U1_th) + (U_eff - U2_th));
         end
         
         % firing frequency input to second-order excitation dynamics of
@@ -160,7 +125,7 @@ for i = 1:length(t)
         Af_fast = Af_fast_function(f_eff_fast,Lce,S);
         
         % activation dependent force of contractile elements
-        Fce = (W1*rF_pcsa_1*Af_slow + W2*rF_pcsa_2*Af_fast);
+        Fce = U_eff*(W1*Af_slow + W2*Af_fast);
         if Fce < 0
             Fce = 0;
         elseif Fce > 1
@@ -184,8 +149,8 @@ for i = 1:length(t)
         S_vec(i) = S;
         
         Force(i) = Fce*F0;
-        Force_slow(i) = W1*rF_pcsa_1*Af_slow*F0;
-        Force_fast(i) = W2*rF_pcsa_2*Af_fast*F0;
+        Force_slow(i) = W1*Af_slow*F0;
+        Force_fast(i) = W2*Af_fast*F0;
 end
     
 output.Force_total = Force;
@@ -241,6 +206,10 @@ Af = 1 - exp(-((S*f_eff)/(a_f*n_f))^n_f);
 end
 
 function [f_out,f_out_dot,Tf] = f_slow_function(f_out,f_in,f_env,f_eff_dot,Af,Lce,Fs)
+% T_f1 = 0.0484;
+% T_f2 = 0.032;
+% T_f3 = 0.0664;
+% T_f4 = 0.0356;
 
 T_f1 = 0.0343;
 T_f2 = 0.0227;
@@ -258,7 +227,10 @@ f_out = f_out_dot*1/Fs + f_out;
 end
 
 function [f_out,f_out_dot,Tf] = f_fast_function(f_out,f_in,f_env,f_eff_dot,Af,Lce,Fs)
-
+% T_f1 = 0.0121;
+% T_f2 = 0.008;
+% T_f3 = 0.0166;
+% T_f4 = 0.0089;
 
 T_f1 = 0.0206;
 T_f2 = 0.0136;

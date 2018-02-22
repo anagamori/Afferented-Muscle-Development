@@ -1,7 +1,9 @@
 %--------------------------------------------------------------------------
-% motorUnitModel_Cisi.m (10/13/17)
+% motorUnitModel_FT.m (10/13/17)
 % The model of motor units described by Cisi & Kohn (J. Computational Neuroscience, 2008)
 %   The motor unit model is based on the two-compartment model
+%   Peak firing rate = 50 Hz
+% 
 %
 %--------------------------------------------------------------------------
 clear all
@@ -14,22 +16,22 @@ t = 0:1/Fs:5;
 %--------------------------------------------------------------------------
 % Model Parameters
 % Table2
-modelParameters.r_s = 112.5/2*1e-4; %77.5/2*1e-4 Somatic compartment radius [cm]
-modelParameters.l_s = 112.5*1e-4; %77.5*1e-4 Somatic compartment length [cm]
-modelParameters.R_m_s = 0.65; %1.15 Somatic memberance specific resistance [kOhm*cm^2]
+modelParameters.r_s = 77.5/2*1e-4; %77.5/2*1e-4 Somatic compartment radius [cm]
+modelParameters.l_s = 77.5*1e-4; %77.5*1e-4 Somatic compartment length [cm]
+modelParameters.R_m_s = 1.15; %1.15 Somatic memberance specific resistance [kOhm*cm^2]
 
-modelParameters.r_d = 92.5/2*1e-4; %41.5/2*1e-4 Dendritic compartment radius [cm]
-modelParameters.l_d = 10578*1e-4; %5500*1e-4 Dendritic compartment length [cm]
-modelParameters.R_m_d = 6.05; %14.4 Dendritic memberance specific resistance [kOhm*cm^2]
+modelParameters.r_d = 41.5/2*1e-4; %41.5/2*1e-4 Dendritic compartment radius [cm]
+modelParameters.l_d = 5500*1e-4; %5500*1e-4 Dendritic compartment length [cm]
+modelParameters.R_m_d = 14.4; %14.4 Dendritic memberance specific resistance [kOhm*cm^2]
 
 Ca_Threshold = 2.5; %% [mV]
 axonThreshold = 18; % [mA] (page 526)
 
-modelParameters.rheobase = 23.4; %6.5 [nA]
+modelParameters.rheobase = 3.5; %6.5 [nA]
 
 modelParameters.g_Na_bar = 30; %30 % Maximal conductances of sodium current [mS/cm^2]
-modelParameters.g_Kf_bar = 0.5; %4 % Maximal conductances of potassium current  [mS/cm^2]
-modelParameters.g_Ks_bar = 0.27; %16 % [mS/cm^2]
+modelParameters.g_Kf_bar = 4; %4 % Maximal conductances of potassium current  [mS/cm^2]
+modelParameters.g_Ks_bar = 16; %16 % [mS/cm^2]
 
 % State variables
 time2peak = 0.6; % time to peak for state variables [ms]

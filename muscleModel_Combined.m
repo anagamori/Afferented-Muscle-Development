@@ -92,12 +92,11 @@ Outputforce_half= zeros(N_MU,length(t));
 OutputAf = zeros(N_MU,length(t));
 OutputFF = zeros(N_MU,length(t));
 
-<<<<<<< Updated upstream
-=======
+
 Fs_MU = 1000;
 count = 1;
 index_MU = 1:Fs/Fs_MU:length(t);
->>>>>>> Stashed changes
+
 %--------------------------------------------------------------------------
 % Simulation
 for i = 1:length(t)

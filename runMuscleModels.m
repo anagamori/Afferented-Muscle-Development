@@ -10,7 +10,7 @@ load('cor_factor')
 modelParameter.cor_factor = cor_factor;
 simulationParameter.Lce = 1;
 
-Fs = 10000;
+Fs = 2000;
 t = 0:1/Fs:5;
 amp_temp = 0.1:0.1:1;
 
@@ -23,7 +23,7 @@ input = [zeros(1,0.5*Fs) amp*[0:1/Fs:1] amp*ones(1,3*Fs),zeros(1,0.5*Fs)];
     
 output_1 = muscleModel_Song(t,Fs,input,modelParameter,simulationParameter);
 output_2 = muscleModel_Tsianos(t,Fs,input,modelParameter,simulationParameter);
-output_3 = muscleModel_Combined_v3(t,Fs,input,modelParameter,simulationParameter,1);
+output_3 = muscleModel_Combined(t,Fs,input,modelParameter,simulationParameter,1);
 
 maxForce1(i) =  mean(output_1.Force_total(3*Fs:4*Fs));
 maxForce2(i) = mean(output_2.Force_total(3*Fs:4*Fs));
